@@ -1,0 +1,32 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.leaflet-popup-content {
+    width: 300px;
+}
+
+.leaflet-popup-content h2 {
+    margin: 0 !important;
+}
+
+.leaflet-popup-content p{
+    margin: 0 !important;
+    font-size: medium !important;
+}
+
+.leaflet-sidebar {
+    width: 450px !important;
+    height: 300px !important;
+}
+
+.leaflet-sidebar .close {
+    right: 0 !important;
+    z-index: 3000 !important;
+}
+
+#sidebar-content p {
+    font-size: medium !important;
+    margin: 5px;
+}
