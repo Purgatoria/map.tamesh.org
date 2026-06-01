@@ -26,10 +26,9 @@ if (!isset($_SESSION['username'])) {
     <div id="map"></div>
 
     <!-- SIDEBAR -->
-    
-	<!--<div id="sidebar" class="leaflet-sidebar collapsed">
-        <div id="sidebar-content"></div>
-    </div> -->
+    <div id="sidebar" style="padding: 0;">
+        <div id="sb-content"></div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>

@@ -39,60 +39,199 @@ var baseMaps = {
 
 L.control.layers(baseMaps, null, {position: 'topright', collapsed: false}).addTo(map);
 
-/*var sidebar = L.control.sidebar('sidebar', {
+var sidebar = L.control.sidebar('sidebar', {
     position: 'left',
-    closeButton: true
+    closeButton: false
 });
-map.addControl(sidebar);*/
+map.addControl(sidebar);
 
 var markers = new L.MarkerClusterGroup({
     maxClusterRadius: 40, // Normalde 80'dir. Yarı yarıya düşürdük, daha zor gruplaşır.
     disableClusteringAtZoom: 14 // 14 seviyesine (mahalle boyutu) yaklaşıldığında gruplamayı tamamen kapatır.
 });
+window.globalNodes = [];
+let currentPolyline = null;
+
+function clearPolyline() {
+    if (currentPolyline) {
+        map.removeLayer(currentPolyline);
+        currentPolyline = null;
+    }
+}
+
+map.on('click', function() {
+    sidebar.hide();
+    clearPolyline();
+});
+
+sidebar.on('hidden', function() {
+    clearPolyline();
+});
+
+function createGaugeSVG(value, min, max, title, unit, color) {
+    if (value === null || isNaN(value)) return '';
+    let percentage = (value - min) / (max - min);
+    if (percentage > 1) percentage = 1;
+    if (percentage < 0) percentage = 0;
+    
+    let radius = 35;
+    let circumference = 2 * Math.PI * radius * 0.75;
+    let strokeDashoffset = circumference - (percentage * circumference);
+
+    return `
+    <div class="gauge-card">
+        <svg width="100" height="90" viewBox="0 0 100 90">
+            <!-- Background arc -->
+            <path d="M 25 70 A 35 35 0 1 1 75 70" fill="none" stroke="#eee" stroke-width="8" stroke-linecap="round"/>
+            <!-- Value arc -->
+            <path d="M 25 70 A 35 35 0 1 1 75 70" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round"
+                  stroke-dasharray="${circumference}" stroke-dashoffset="${strokeDashoffset}" />
+            <text x="50" y="45" text-anchor="middle" font-size="22" font-weight="700" fill="#333">${value.toFixed(1)}</text>
+            <text x="50" y="60" text-anchor="middle" font-size="10" font-weight="600" fill="#888">${title}</text>
+            <text x="50" y="72" text-anchor="middle" font-size="10" font-weight="700" fill="${color}">${unit}</text>
+            <text x="25" y="85" text-anchor="middle" font-size="8" fill="#ccc">${min}</text>
+            <text x="75" y="85" text-anchor="middle" font-size="8" fill="#ccc">${max}</text>
+        </svg>
+    </div>`;
+}
+
+window.drawRFLink = function(lat1, lng1, lat2, lng2, snr) {
+    clearPolyline();
+    let latlngs = [
+        [lat1, lng1],
+        [lat2, lng2]
+    ];
+    
+    currentPolyline = L.polyline(latlngs, {
+        color: 'rgb(31, 97, 65)',
+        weight: 3,
+        dashArray: '8, 8',
+        opacity: 0.8
+    }).addTo(map);
+
+    map.fitBounds(currentPolyline.getBounds(), { padding: [50, 50] });
+    
+    currentPolyline.bindTooltip(`SNR: ${snr} dB`, {
+        permanent: true,
+        className: 'rf-tooltip',
+        direction: 'center'
+    }).openTooltip();
+};
+
+function openSidebar(item, lat, lng) {
+    clearPolyline();
+
+    let roleName = item.role_name || "CLIENT";
+    let markerColor = MapConfig.roles[roleName] || MapConfig.roles["DEFAULT"];
+
+    let d = new Date(item.updated_at);
+    let formatted = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')} ${d.getDate().toString().padStart(2, '0')}.${(d.getMonth() + 1).toString().padStart(2, '0')}.${d.getFullYear()}`;
+
+    let html = `
+        <div class="sidebar-header">
+            <div>
+                <h2 class="sidebar-title" style="color: ${markerColor};">
+                    <i class="fa fa-circle" style="font-size: 14px; vertical-align: middle;"></i> 
+                    ${item.short_name}
+                </h2>
+                <div class="sidebar-subtitle">
+                    <i class="fa fa-location-dot"></i> ${lat.toFixed(5)}, ${lng.toFixed(5)}
+                </div>
+                <div class="sidebar-subtitle">
+                    <i class="fa fa-clock"></i> Son Görülme: ${formatted}
+                </div>
+            </div>
+            <div class="sidebar-close-btn" onclick="sidebar.hide();"><i class="fa fa-times"></i></div>
+        </div>
+    `;
+
+    // Cihaz Detayları Grid
+    let battery_level = parseFloat(item.battery_level);
+    let voltage = parseFloat(item.voltage);
+    
+    html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; font-size: 13px; background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee;">`;
+    html += `<div><strong>Rol:</strong> ${item.role_name}</div>`;
+    html += `<div><strong>Model:</strong> ${item.hardware_model_name}</div>`;
+    html += `<div><strong>FW:</strong> ${item.firmware_version}</div>`;
+    html += `<div><strong>Bölge:</strong> ${item.region_name}</div>`;
+    html += `<div><strong>Modem:</strong> ${item.modem_preset_name}</div>`;
+    html += `<div><strong>QTH:</strong> ${toMaidenhead(lat, lng)}</div>`;
+    
+    if (item.altitude != null && !isNaN(item.altitude)) {
+        html += `<div><strong>Rakım:</strong> ${item.altitude}m</div>`;
+    }
+    if (battery_level <= 100 && !isNaN(battery_level)) {
+        html += `<div><strong>Pil:</strong> %${battery_level} (${voltage.toFixed(2)}V)</div>`;
+    }
+    html += `</div>`;
+
+    // Gauges
+    let temp = parseFloat(item.temperature);
+    let hum = parseFloat(item.relative_humidity);
+    let press = parseFloat(item.barometric_pressure);
+
+    if (!isNaN(temp) || !isNaN(hum) || !isNaN(press)) {
+        html += `<div class="dashboard-grid">`;
+        if (!isNaN(temp)) html += createGaugeSVG(temp, -20, 60, 'TEMP', '°C', '#e74c3c');
+        if (!isNaN(hum)) html += createGaugeSVG(hum, 0, 100, 'HUMIDITY', '%', '#3498db');
+        if (!isNaN(press)) html += createGaugeSVG(press, 900, 1100, 'PRESSURE', 'hPa', '#2ecc71');
+        html += `</div>`;
+    }
+
+    // Neighbours
+    html += `<h3 class="section-title"><i class="fa fa-network-wired"></i> Komşular (${item.neighbours ? item.neighbours.length : 0})</h3>`;
+    html += `<div class="neighbour-list">`;
+    
+    if (item.neighbours && item.neighbours.length > 0) {
+        item.neighbours.forEach(n => {
+            let nData = window.globalNodes.find(x => x.node_id === n.node_id || x.node_id === n.node_id.toString());
+            let nName = nData ? (nData.long_name || nData.short_name) : \`Bilinmeyen (ID: \${n.node_id})\`;
+            
+            let clickAction = "";
+            if (nData && nData.latitude && nData.longitude) {
+                let nLat = nData.latitude / 1e7;
+                let nLng = nData.longitude / 1e7;
+                clickAction = \`onclick="drawRFLink(\${lat}, \${lng}, \${nLat}, \${nLng}, \${n.snr})"\`;
+            }
+
+            html += \`
+                <div class="neighbour-item" \${clickAction}>
+                    <div class="neighbour-name">\${nName}</div>
+                    <div class="neighbour-snr">SNR: \${n.snr}</div>
+                </div>
+            \`;
+        });
+    } else {
+        html += \`<div class="no-data">Komşu verisi bulunamadı.</div>\`;
+    }
+    
+    html += \`</div>\`;
+
+    document.getElementById('sb-content').innerHTML = html;
+    sidebar.show();
+}
+
 $.getJSON('https://map.tamesh.org/api/nodes', function (data) {
+    window.globalNodes = data.nodes;
     data.nodes.forEach(function (item) {
       	if (item.latitude == null && item.longitude == null) return;
         let lat = item.latitude / 1e7;
         let lng = item.longitude / 1e7;
 
         if (!isNaN(lat) && !isNaN(lng)) {
-            let battery_level = parseFloat(item.battery_level);
-            let voltage = parseFloat(item.voltage);
-            let temperature = parseFloat(item.temperature);
-            let relative_humidity = parseFloat(item.relative_humidity);
-            let barometric_pressure = parseFloat(item.barometric_pressure);
-            let d = new Date(item.updated_at);
-            let formatted = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')} ${d.getDate().toString().padStart(2, '0')}.${(d.getMonth() + 1).toString().padStart(2, '0')}.${d.getFullYear()}`;
-
-            var popupContent =
-                `<h2>${item.long_name} (${item.short_name})</h2>` +
-                `<hr>` +
-                `<p><strong>FW Versiyon</strong>: ${item.firmware_version}</p>` +
-                `<p><strong>Modem Ayarı</strong>: ${item.modem_preset_name}</p>` +
-                `<p><strong>Bölge</strong>: ${item.region_name}</p>` +
-                `<p><strong>Cihaz</strong>: ${item.hardware_model_name}</p>` +
-                `<p><strong>Rol</strong>: ${item.role_name}</p>`;
-            if (battery_level <= 100) popupContent = popupContent + `<p><strong>Pil</strong>: ${voltage.toFixed(2)}V (%${battery_level})</p>`;
-            popupContent = popupContent + `<p><strong>QTH</strong>: ${toMaidenhead(lat, lng)}</p>`;
-            if (item.altitude != null && !isNaN(item.altitude)) popupContent = popupContent + `<p><strong>Yükseklik</strong>: ${item.altitude}m</p>`;
-            if (temperature != null && !isNaN(temperature)) popupContent = popupContent + `<p><strong>Sıcaklık</strong>: ${temperature.toFixed(2)}°C</p>`;
-            if (relative_humidity != null && !isNaN(relative_humidity)) popupContent = popupContent + `<p><strong>Nem</strong>: %${relative_humidity.toFixed(2)}</p>`;
-            if (barometric_pressure != null && !isNaN(barometric_pressure)) popupContent = popupContent + `<p><strong>Basınç</strong>: ${barometric_pressure.toFixed(2)}hPa</p>`;
-            popupContent = popupContent + `<p><strong>Son Güncelleme</strong>: ${formatted}</p><hr>`;
-
             let roleName = item.role_name || "CLIENT";
             let markerColor = MapConfig.roles[roleName] || MapConfig.roles["DEFAULT"];
             
-            let iconHtml = `<div style="
-                background-color: ${markerColor};
-                width: ${MapConfig.markerRadius * 2}px;
-                height: ${MapConfig.markerRadius * 2}px;
+            let iconHtml = \`<div style="
+                background-color: \${markerColor};
+                width: \${MapConfig.markerRadius * 2}px;
+                height: \${MapConfig.markerRadius * 2}px;
                 border-radius: 50%;
-                border: ${MapConfig.markerStyle.weight}px solid ${MapConfig.markerStyle.color};
-                opacity: ${MapConfig.markerStyle.fillOpacity};
+                border: \${MapConfig.markerStyle.weight}px solid \${MapConfig.markerStyle.color};
+                opacity: \${MapConfig.markerStyle.fillOpacity};
                 box-shadow: 0 0 3px rgba(0,0,0,0.5);
                 box-sizing: border-box;
-            "></div>`;
+            "></div>\`;
 
             let customIcon = L.divIcon({
                 html: iconHtml,
@@ -102,13 +241,15 @@ $.getJSON('https://map.tamesh.org/api/nodes', function (data) {
             });
 
             let marker = L.marker([lat, lng], { icon: customIcon })
-                .bindTooltip(`${item.long_name} (${item.short_name})`, {
+                .bindTooltip(\`\${item.long_name} (\${item.short_name})\`, {
                     permanent: true,
                     direction: 'bottom',
                     className: 'node-label',
                     offset: [0, MapConfig.markerRadius]
                 })
-                .bindPopup(popupContent);
+                .on('click', function() {
+                    openSidebar(item, lat, lng);
+                });
             markers.addLayer(marker);
         }
     });
