@@ -16,6 +16,7 @@ var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 });
 
 var topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    maxZoom: 17,
     attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> contributors'
 });
 
