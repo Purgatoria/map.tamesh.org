@@ -50,22 +50,20 @@ var markers = new L.MarkerClusterGroup({
     disableClusteringAtZoom: 14 // 14 seviyesine (mahalle boyutu) yaklaşıldığında gruplamayı tamamen kapatır.
 });
 window.globalNodes = [];
-let currentPolyline = null;
+let currentPolylines = [];
 
-function clearPolyline() {
-    if (currentPolyline) {
-        map.removeLayer(currentPolyline);
-        currentPolyline = null;
-    }
+function clearPolylines() {
+    currentPolylines.forEach(p => map.removeLayer(p));
+    currentPolylines = [];
 }
 
 map.on('click', function() {
     sidebar.hide();
-    clearPolyline();
+    clearPolylines();
 });
 
 sidebar.on('hidden', function() {
-    clearPolyline();
+    clearPolylines();
 });
 
 function createGaugeSVG(value, min, max, title, unit, color) {
@@ -95,31 +93,8 @@ function createGaugeSVG(value, min, max, title, unit, color) {
     </div>`;
 }
 
-window.drawRFLink = function(lat1, lng1, lat2, lng2, snr) {
-    clearPolyline();
-    let latlngs = [
-        [lat1, lng1],
-        [lat2, lng2]
-    ];
-    
-    currentPolyline = L.polyline(latlngs, {
-        color: 'rgb(31, 97, 65)',
-        weight: 3,
-        dashArray: '8, 8',
-        opacity: 0.8
-    }).addTo(map);
-
-    map.fitBounds(currentPolyline.getBounds(), { padding: [50, 50] });
-    
-    currentPolyline.bindTooltip(`SNR: ${snr} dB`, {
-        permanent: true,
-        className: 'rf-tooltip',
-        direction: 'center'
-    }).openTooltip();
-};
-
 function openSidebar(item, lat, lng) {
-    clearPolyline();
+    clearPolylines();
 
     let roleName = item.role_name || "CLIENT";
     let markerColor = MapConfig.roles[roleName] || MapConfig.roles["DEFAULT"];
@@ -182,6 +157,8 @@ function openSidebar(item, lat, lng) {
     html += `<h3 class="section-title"><i class="fa fa-network-wired"></i> Komşular (${item.neighbours ? item.neighbours.length : 0})</h3>`;
     html += `<div class="neighbour-list">`;
     
+    let bounds = L.latLngBounds([ [lat, lng] ]);
+
     if (item.neighbours && item.neighbours.length > 0) {
         item.neighbours.forEach(n => {
             let nData = window.globalNodes.find(x => x.node_id === n.node_id || x.node_id === n.node_id.toString());
@@ -191,7 +168,24 @@ function openSidebar(item, lat, lng) {
             if (nData && nData.latitude && nData.longitude) {
                 let nLat = nData.latitude / 1e7;
                 let nLng = nData.longitude / 1e7;
-                clickAction = `onclick="drawRFLink(${lat}, ${lng}, ${nLat}, ${nLng}, ${n.snr})"`;
+                
+                let p = L.polyline([[lat, lng], [nLat, nLng]], {
+                    color: 'rgb(31, 97, 65)',
+                    weight: 3,
+                    dashArray: '8, 8',
+                    opacity: 0.8
+                }).addTo(map);
+                
+                p.bindTooltip(`SNR: ${n.snr} dB`, {
+                    permanent: true,
+                    className: 'rf-tooltip',
+                    direction: 'center'
+                }).openTooltip();
+                
+                currentPolylines.push(p);
+                bounds.extend([nLat, nLng]);
+                
+                clickAction = `onclick="map.flyTo([${nLat}, ${nLng}], 15, {animate: true, duration: 1.5});" title="Haritada konuma git"`;
             }
 
             html += `
@@ -201,6 +195,12 @@ function openSidebar(item, lat, lng) {
                 </div>
             `;
         });
+        
+        if (currentPolylines.length > 0) {
+            setTimeout(() => {
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }, 100);
+        }
     } else {
         html += `<div class="no-data">Komşu verisi bulunamadı.</div>`;
     }
