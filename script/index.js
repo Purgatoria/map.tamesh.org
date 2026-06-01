@@ -37,7 +37,11 @@ var baseMaps = {
     "Koyu Tema": darkLayer
 };
 
-L.control.layers(baseMaps, null, {position: 'topright', collapsed: false}).addTo(map);
+let isMobileView = window.innerWidth <= 768 || window.outerWidth <= 768;
+L.control.layers(baseMaps, null, {
+    position: isMobileView ? 'bottomleft' : 'topright', 
+    collapsed: isMobileView
+}).addTo(map);
 
 var sidebar = L.control.sidebar('sidebar', {
     position: 'left',

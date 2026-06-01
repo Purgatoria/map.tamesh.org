@@ -411,6 +411,11 @@ body.hide-node-labels .node-label {
 /* MOBILE FIXES */
 @media (max-width: 768px) {
     .search-container {
-        top: 70px; /* Harita butonlarının (layer, zoom) üstüne binmesini engellemek için aşağı kaydırıldı */
+        top: 12px;
+        left: 55px; /* Zoom butonlarını kurtaracak kadar sağa */
+        right: 15px; /* Ekranın sağ kenarından boşluk */
+        width: auto;
+        transform: none;
+        max-width: none;
     }
 }
