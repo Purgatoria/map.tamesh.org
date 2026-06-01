@@ -36,7 +36,7 @@ var baseMaps = {
     "Koyu Tema": darkLayer
 };
 
-L.control.layers(baseMaps, null, {position: 'topright'}).addTo(map);
+L.control.layers(baseMaps, null, {position: 'topright', collapsed: false}).addTo(map);
 
 /*var sidebar = L.control.sidebar('sidebar', {
     position: 'left',
