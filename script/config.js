@@ -26,7 +26,7 @@ const MapConfig = {
     // Marker nokta stili (çerçeve vs.)
     markerStyle: {
         color: "#fff",        // Nokta dış çerçeve rengi
-        weight: 2,            // Dış çerçeve kalınlığı
+        weight: 3,            // Dış çerçeve kalınlığı
         opacity: 1,           // Dış çerçeve görünürlüğü (0 - 1)
         fillOpacity: 0.9      // İç dolgu görünürlüğü (0 - 1)
     }
