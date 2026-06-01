@@ -72,23 +72,35 @@ body {
 
 .legend-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr; /* Masaüstünde tek sütun (alt alta) */
     column-gap: 15px;
 }
 
-/* Mobilde ekran dışına taşmasını veya çok yer kaplamasını önlemek için font küçültmesi */
+/* Mobilde harika bir Bottom-Sheet (Ekranı kaplayan alt çekmece) görünümü */
 @media (max-width: 600px) {
-    .legend {
-        font-size: 11px;
-        padding: 8px;
+    .leaflet-control.legend {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        margin: 0 !important;
+        border-radius: 20px 20px 0 0; /* Sadece üst köşeler yuvarlak */
+        z-index: 9999;
+        box-sizing: border-box;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 -5px 25px rgba(0,0,0,0.3);
     }
+    
     .legend-grid {
+        grid-template-columns: repeat(2, 1fr); /* Mobilde 2 sütun */
         column-gap: 10px;
     }
-    .legend i {
-        width: 10px;
-        height: 10px;
-        margin-right: 5px;
+    
+    .legend h4 {
+        text-align: center;
+        margin-bottom: 15px !important;
+        font-size: 16px !important;
     }
 }
 
