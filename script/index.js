@@ -137,15 +137,18 @@ legend.onAdd = function (map) {
     div.innerHTML += '<h4 style="margin: 0 0 8px 0; font-size: 14px;">Rol Renkleri</h4>';
     
     // config.js içerisindeki rolleri dön ve listeye ekle
+    var gridDiv = '<div class="legend-grid">';
     for (var role in MapConfig.roles) {
         if (role !== "DEFAULT") {
-            div.innerHTML +=
+            gridDiv +=
                 '<div class="legend-item">' +
                 '<i style="background:' + MapConfig.roles[role] + '; border: ' + MapConfig.markerStyle.weight + 'px solid ' + MapConfig.markerStyle.color + '"></i> ' +
                 '<span>' + role + '</span>' +
                 '</div>';
         }
     }
+    gridDiv += '</div>';
+    div.innerHTML += gridDiv;
     return div;
 };
 

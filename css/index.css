@@ -70,6 +70,28 @@ body {
     min-width: 150px;
 }
 
+.legend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 15px;
+}
+
+/* Mobilde ekran dışına taşmasını veya çok yer kaplamasını önlemek için font küçültmesi */
+@media (max-width: 600px) {
+    .legend {
+        font-size: 11px;
+        padding: 8px;
+    }
+    .legend-grid {
+        column-gap: 10px;
+    }
+    .legend i {
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+    }
+}
+
 .legend-item {
     display: flex;
     align-items: center;
