@@ -54,7 +54,26 @@ $.getJSON('https://map.tamesh.org/api/nodes', function (data) {
             if (barometric_pressure != null && !isNaN(barometric_pressure)) popupContent = popupContent + `<p><strong>Basınç</strong>: ${barometric_pressure.toFixed(2)}hPa</p>`;
             popupContent = popupContent + `<p><strong>Son Güncelleme</strong>: ${formatted}</p><hr>`;
 
-            let marker = L.marker([lat, lng]).bindPopup(popupContent);
+            let roleName = item.role_name || "CLIENT";
+            let markerColor = MapConfig.roles[roleName] || MapConfig.roles["DEFAULT"];
+            
+            let markerOptions = {
+                radius: MapConfig.markerRadius,
+                fillColor: markerColor,
+                color: MapConfig.markerStyle.color,
+                weight: MapConfig.markerStyle.weight,
+                opacity: MapConfig.markerStyle.opacity,
+                fillOpacity: MapConfig.markerStyle.fillOpacity
+            };
+
+            let marker = L.circleMarker([lat, lng], markerOptions)
+                .bindTooltip(`${item.long_name} (${item.short_name})`, {
+                    permanent: true,
+                    direction: 'bottom',
+                    className: 'node-label',
+                    offset: [0, MapConfig.markerRadius]
+                })
+                .bindPopup(popupContent);
             markers.addLayer(marker);
         }
     });

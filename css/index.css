@@ -30,3 +30,27 @@ body {
     font-size: medium !important;
     margin: 5px;
 }
+
+.node-label {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    color: #333;
+    font-weight: 700;
+    font-size: 12px;
+    text-shadow: 
+        1px 1px 0 #fff, 
+       -1px -1px 0 #fff, 
+        1px -1px 0 #fff, 
+       -1px 1px 0 #fff, 
+        0px 1px 0 #fff, 
+        1px 0px 0 #fff, 
+        0px -1px 0 #fff, 
+       -1px 0px 0 #fff;
+    white-space: nowrap;
+}
+
+/* Ok (üçgen) kısmını gizle */
+.leaflet-tooltip.node-label::before {
+    display: none;
+}
