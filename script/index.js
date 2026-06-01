@@ -57,16 +57,25 @@ $.getJSON('https://map.tamesh.org/api/nodes', function (data) {
             let roleName = item.role_name || "CLIENT";
             let markerColor = MapConfig.roles[roleName] || MapConfig.roles["DEFAULT"];
             
-            let markerOptions = {
-                radius: MapConfig.markerRadius,
-                fillColor: markerColor,
-                color: MapConfig.markerStyle.color,
-                weight: MapConfig.markerStyle.weight,
-                opacity: MapConfig.markerStyle.opacity,
-                fillOpacity: MapConfig.markerStyle.fillOpacity
-            };
+            let iconHtml = `<div style="
+                background-color: ${markerColor};
+                width: ${MapConfig.markerRadius * 2}px;
+                height: ${MapConfig.markerRadius * 2}px;
+                border-radius: 50%;
+                border: ${MapConfig.markerStyle.weight}px solid ${MapConfig.markerStyle.color};
+                opacity: ${MapConfig.markerStyle.fillOpacity};
+                box-shadow: 0 0 3px rgba(0,0,0,0.5);
+                box-sizing: border-box;
+            "></div>`;
 
-            let marker = L.circleMarker([lat, lng], markerOptions)
+            let customIcon = L.divIcon({
+                html: iconHtml,
+                className: 'custom-circle-icon',
+                iconSize: [MapConfig.markerRadius * 2, MapConfig.markerRadius * 2],
+                iconAnchor: [MapConfig.markerRadius, MapConfig.markerRadius]
+            });
+
+            let marker = L.marker([lat, lng], { icon: customIcon })
                 .bindTooltip(`${item.long_name} (${item.short_name})`, {
                     permanent: true,
                     direction: 'bottom',

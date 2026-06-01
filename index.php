@@ -14,7 +14,7 @@ if (!isset($_SESSION['username'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Map</title>
 	<meta name="referrer" content="strict-origin-when-cross-origin">
-    <link rel="stylesheet" href="./css/index.css" />
+    <link rel="stylesheet" href="./css/index.css?v=<?= time() ?>" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
@@ -35,8 +35,8 @@ if (!isset($_SESSION['username'])) {
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-sidebar@0.2.4/src/L.Control.Sidebar.min.js"></script>
-    <script src="./script/config.js"></script>
-    <script src="./script/index.js"></script>
+    <script src="./script/config.js?v=<?= time() ?>"></script>
+    <script src="./script/index.js?v=<?= time() ?>"></script>
 </body>
 
 </html>
