@@ -185,27 +185,27 @@ function openSidebar(item, lat, lng) {
     if (item.neighbours && item.neighbours.length > 0) {
         item.neighbours.forEach(n => {
             let nData = window.globalNodes.find(x => x.node_id === n.node_id || x.node_id === n.node_id.toString());
-            let nName = nData ? (nData.long_name || nData.short_name) : \`Bilinmeyen (ID: \${n.node_id})\`;
+            let nName = nData ? (nData.long_name || nData.short_name) : `Bilinmeyen (ID: ${n.node_id})`;
             
             let clickAction = "";
             if (nData && nData.latitude && nData.longitude) {
                 let nLat = nData.latitude / 1e7;
                 let nLng = nData.longitude / 1e7;
-                clickAction = \`onclick="drawRFLink(\${lat}, \${lng}, \${nLat}, \${nLng}, \${n.snr})"\`;
+                clickAction = `onclick="drawRFLink(${lat}, ${lng}, ${nLat}, ${nLng}, ${n.snr})"`;
             }
 
-            html += \`
-                <div class="neighbour-item" \${clickAction}>
-                    <div class="neighbour-name">\${nName}</div>
-                    <div class="neighbour-snr">SNR: \${n.snr}</div>
+            html += `
+                <div class="neighbour-item" ${clickAction}>
+                    <div class="neighbour-name">${nName}</div>
+                    <div class="neighbour-snr">SNR: ${n.snr}</div>
                 </div>
-            \`;
+            `;
         });
     } else {
-        html += \`<div class="no-data">Komşu verisi bulunamadı.</div>\`;
+        html += `<div class="no-data">Komşu verisi bulunamadı.</div>`;
     }
     
-    html += \`</div>\`;
+    html += `</div>`;
 
     document.getElementById('sb-content').innerHTML = html;
     sidebar.show();
@@ -222,16 +222,16 @@ $.getJSON('https://map.tamesh.org/api/nodes', function (data) {
             let roleName = item.role_name || "CLIENT";
             let markerColor = MapConfig.roles[roleName] || MapConfig.roles["DEFAULT"];
             
-            let iconHtml = \`<div style="
-                background-color: \${markerColor};
-                width: \${MapConfig.markerRadius * 2}px;
-                height: \${MapConfig.markerRadius * 2}px;
+            let iconHtml = `<div style="
+                background-color: ${markerColor};
+                width: ${MapConfig.markerRadius * 2}px;
+                height: ${MapConfig.markerRadius * 2}px;
                 border-radius: 50%;
-                border: \${MapConfig.markerStyle.weight}px solid \${MapConfig.markerStyle.color};
-                opacity: \${MapConfig.markerStyle.fillOpacity};
+                border: ${MapConfig.markerStyle.weight}px solid ${MapConfig.markerStyle.color};
+                opacity: ${MapConfig.markerStyle.fillOpacity};
                 box-shadow: 0 0 3px rgba(0,0,0,0.5);
                 box-sizing: border-box;
-            "></div>\`;
+            "></div>`;
 
             let customIcon = L.divIcon({
                 html: iconHtml,
@@ -241,7 +241,7 @@ $.getJSON('https://map.tamesh.org/api/nodes', function (data) {
             });
 
             let marker = L.marker([lat, lng], { icon: customIcon })
-                .bindTooltip(\`\${item.long_name} (\${item.short_name})\`, {
+                .bindTooltip(`${item.long_name} (${item.short_name})`, {
                     permanent: true,
                     direction: 'bottom',
                     className: 'node-label',
