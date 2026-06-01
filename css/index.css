@@ -35,18 +35,14 @@ body {
     background-color: transparent;
     border: none;
     box-shadow: none;
-    color: #333;
-    font-weight: 700;
-    font-size: 12px;
+    color: #222;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.3px;
     text-shadow: 
-        1px 1px 0 #fff, 
-       -1px -1px 0 #fff, 
-        1px -1px 0 #fff, 
-       -1px 1px 0 #fff, 
-        0px 1px 0 #fff, 
-        1px 0px 0 #fff, 
-        0px -1px 0 #fff, 
-       -1px 0px 0 #fff;
+        0px 0px 3px rgba(255,255,255,0.9),
+        1px 1px 2px rgba(255,255,255,0.9),
+       -1px -1px 2px rgba(255,255,255,0.9);
     white-space: nowrap;
 }
 
@@ -117,4 +113,44 @@ body {
     border-radius: 50%;
     margin-right: 8px;
     box-sizing: border-box;
+}
+
+/* Harita Katman Seçici (Layers Control) Özelleştirmesi */
+.leaflet-control-layers {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+    padding: 8px 12px !important;
+    font-family: 'Inter', sans-serif !important;
+    color: #333;
+}
+
+.leaflet-control-layers-list label {
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.leaflet-control-layers-list label:hover {
+    color: rgb(31, 97, 65);
+}
+
+.leaflet-control-layers-list label:last-child {
+    margin-bottom: 0;
+}
+
+.leaflet-control-layers-list input[type="radio"] {
+    margin-right: 8px;
+    accent-color: rgb(31, 97, 65);
+    cursor: pointer;
+}
+
+.leaflet-control-layers-list span {
+    font-weight: 500;
 }
