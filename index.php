@@ -25,6 +25,13 @@ if (!isset($_SESSION['username'])) {
 <body>
     <div id="map"></div>
 
+    <!-- SEARCH BAR -->
+    <div class="search-container">
+        <i class="fa fa-search search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Node ara (Kısa ad, uzun ad veya ID)..." autocomplete="off" />
+        <div class="search-dropdown" id="searchDropdown"></div>
+    </div>
+
     <!-- SIDEBAR -->
     <div id="sidebar" style="padding: 0;">
         <div id="sb-content"></div>

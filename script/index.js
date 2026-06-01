@@ -314,3 +314,68 @@ legend.onAdd = function (map) {
 };
 
 legend.addTo(map);
+
+// SEARCH BAR LOGIC
+$(document).ready(function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchDropdown = document.getElementById('searchDropdown');
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-container')) {
+            searchDropdown.classList.remove('show');
+        }
+    });
+
+    searchInput.addEventListener('input', function(e) {
+        let val = e.target.value.toLowerCase().trim();
+        searchDropdown.innerHTML = '';
+        
+        if (val.length < 2) {
+            searchDropdown.classList.remove('show');
+            return;
+        }
+
+        let results = window.globalNodes.filter(node => {
+            let sn = (node.short_name || "").toLowerCase();
+            let ln = (node.long_name || "").toLowerCase();
+            let id = (node.node_id || "").toString();
+            return sn.includes(val) || ln.includes(val) || id.includes(val);
+        }).slice(0, 15);
+
+        if (results.length > 0) {
+            results.forEach(node => {
+                let name = node.long_name || node.short_name || "Bilinmeyen Node";
+                let div = document.createElement('div');
+                div.className = 'search-item';
+                div.innerHTML = `
+                    <div class="search-item-name"><i class="fa fa-microchip search-item-icon"></i> ${name}</div>
+                    <div class="search-item-id">${node.short_name || node.node_id}</div>
+                `;
+                
+                div.addEventListener('click', function() {
+                    searchInput.value = '';
+                    searchDropdown.classList.remove('show');
+                    
+                    if (node.latitude != null && node.longitude != null) {
+                        let lat = node.latitude / 1e7;
+                        let lng = node.longitude / 1e7;
+                        
+                        map.flyTo([lat, lng], 15, {
+                            animate: true,
+                            duration: 1.5
+                        });
+
+                        setTimeout(() => {
+                            openSidebar(node, lat, lng);
+                        }, 1500);
+                    }
+                });
+                
+                searchDropdown.appendChild(div);
+            });
+            searchDropdown.classList.add('show');
+        } else {
+            searchDropdown.classList.remove('show');
+        }
+    });
+});
