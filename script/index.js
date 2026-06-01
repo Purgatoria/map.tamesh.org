@@ -45,7 +45,10 @@ L.control.layers(baseMaps, null, {position: 'topright', collapsed: false}).addTo
 });
 map.addControl(sidebar);*/
 
-var markers = new L.MarkerClusterGroup();
+var markers = new L.MarkerClusterGroup({
+    maxClusterRadius: 40, // Normalde 80'dir. Yarı yarıya düşürdük, daha zor gruplaşır.
+    disableClusteringAtZoom: 14 // 14 seviyesine (mahalle boyutu) yaklaşıldığında gruplamayı tamamen kapatır.
+});
 $.getJSON('https://map.tamesh.org/api/nodes', function (data) {
     data.nodes.forEach(function (item) {
       	if (item.latitude == null && item.longitude == null) return;
