@@ -423,6 +423,11 @@ body.hide-node-labels .node-label {
     text-align: center;
     padding: 10px 0;
 }
+
+.trace-arrow-icon, .neighbour-arrow-icon {
+    background: transparent !important;
+    border: none !important;
+}
 .layer-btn {
     flex: 1;
     white-space: nowrap;

@@ -186,6 +186,23 @@ function openSidebar(item, lat, lng) {
                     }).openTooltip();
                     
                     currentPolylines.push(p);
+
+                    // Komşu çizgisi için Ok işareti (Direction Arrow)
+                    let pA = map.project([lat, lng], 0);
+                    let pB = map.project([nLat, nLng], 0);
+                    let angle = Math.atan2(pB.y - pA.y, pB.x - pA.x) * 180 / Math.PI;
+                    
+                    let midLat = (lat + nLat) / 2;
+                    let midLng = (lng + nLng) / 2;
+                    
+                    let arrowIcon = L.divIcon({
+                        className: 'neighbour-arrow-icon',
+                        html: `<div style="transform: rotate(${angle}deg); color: rgb(31, 97, 65); font-size: 16px; font-weight: bold; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; line-height: 1;">➤</div>`,
+                        iconSize: [16, 16],
+                        iconAnchor: [8, 8]
+                    });
+                    let arrowMarker = L.marker([midLat, midLng], {icon: arrowIcon, interactive: false}).addTo(map);
+                    currentPolylines.push(arrowMarker);
                 }
                 
                 clickAction = `onclick="map.flyTo([${nLat}, ${nLng}], 15, {animate: true, duration: 1.5});" title="Haritada konuma git"`;
