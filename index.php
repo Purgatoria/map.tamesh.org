@@ -25,10 +25,18 @@ if (!isset($_SESSION['username'])) {
 <body>
     <div id="map"></div>
 
-    <!-- SEARCH BAR -->
+    <!-- SEARCH BAR & TOOLBAR -->
     <div class="search-container">
         <i class="fa fa-search search-icon"></i>
         <input type="text" id="searchInput" placeholder="Node ara (Kısa ad, uzun ad veya ID)..." autocomplete="off" />
+        
+        <div class="map-type-toolbar">
+            <button class="layer-btn active" data-layer="osm">Normal (OSM)</button>
+            <button class="layer-btn" data-layer="topo">Topo</button>
+            <button class="layer-btn" data-layer="satellite">Uydu</button>
+            <button class="layer-btn" data-layer="dark">Koyu Tema</button>
+        </div>
+
         <div class="search-dropdown" id="searchDropdown"></div>
     </div>
 

@@ -358,9 +358,52 @@ body.hide-node-labels .node-label {
     font-size: 16px;
     z-index: 2;
 }
+
+/* CUSTOM LAYER TOOLBAR */
+.map-type-toolbar {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    overflow-x: auto;
+    padding-bottom: 5px; /* Kaydırma çubuğu payı */
+}
+.map-type-toolbar::-webkit-scrollbar {
+    height: 4px;
+}
+.map-type-toolbar::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+.layer-btn {
+    flex: 1;
+    white-space: nowrap;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+    outline: none;
+}
+.layer-btn:hover {
+    background: #fff;
+    border-color: rgb(31, 97, 65);
+    color: rgb(31, 97, 65);
+}
+.layer-btn.active {
+    background: rgb(31, 97, 65);
+    color: #fff;
+    border-color: rgb(31, 97, 65);
+    box-shadow: 0 4px 10px rgba(31, 97, 65, 0.3);
+}
+
 .search-dropdown {
     position: absolute;
-    top: 55px;
+    top: 100px;
     left: 0;
     width: 100%;
     background: white;

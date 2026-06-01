@@ -37,12 +37,6 @@ var baseMaps = {
     "Koyu Tema": darkLayer
 };
 
-let isMobileView = window.innerWidth <= 768 || window.outerWidth <= 768;
-L.control.layers(baseMaps, null, {
-    position: isMobileView ? 'bottomleft' : 'topright', 
-    collapsed: isMobileView
-}).addTo(map);
-
 var sidebar = L.control.sidebar('sidebar', {
     position: 'left',
     closeButton: false
@@ -372,5 +366,32 @@ $(document).ready(function() {
         } else {
             searchDropdown.classList.remove('show');
         }
+    });
+});
+
+// CUSTOM LAYER TOOLBAR LOGIC
+$(document).ready(function() {
+    const layerBtns = document.querySelectorAll('.layer-btn');
+    const layerMap = {
+        'osm': osmLayer,
+        'topo': topoLayer,
+        'satellite': satelliteLayer,
+        'dark': darkLayer
+    };
+
+    layerBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            layerBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            Object.values(layerMap).forEach(layer => {
+                map.removeLayer(layer);
+            });
+            
+            let selectedLayer = layerMap[this.getAttribute('data-layer')];
+            if(selectedLayer) {
+                selectedLayer.addTo(map);
+            }
+        });
     });
 });
