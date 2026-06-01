@@ -32,17 +32,16 @@ body {
 }
 
 .node-label {
-    background-color: transparent;
-    border: none;
-    box-shadow: none;
-    color: #222;
+    background-color: rgba(255, 255, 255, 0.85); /* Hafif saydam beyaz arka plan */
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px; /* Hafif yuvarlak köşeli kutu */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    color: #111;
     font-weight: 600;
-    font-size: 11px;
+    font-size: 10px; /* Daha ufak ve kompakt */
     letter-spacing: 0.3px;
-    text-shadow: 
-        0px 0px 3px rgba(255,255,255,0.9),
-        1px 1px 2px rgba(255,255,255,0.9),
-       -1px -1px 2px rgba(255,255,255,0.9);
+    padding: 2px 5px !important;
+    text-shadow: none; /* Karışıklık yaratan gölgeler kaldırıldı */
     white-space: nowrap;
 }
 
@@ -131,7 +130,7 @@ body {
 .leaflet-control-layers-list label {
     margin-bottom: 8px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 15px; /* Yazı boyutu artırıldı */
     display: flex;
     align-items: center;
     transition: color 0.2s;
