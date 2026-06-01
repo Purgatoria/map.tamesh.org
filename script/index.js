@@ -378,10 +378,6 @@ $(document).ready(function() {
         'satellite': satelliteLayer
     };
 
-    document.getElementById('layerToggleBtn').addEventListener('click', function() {
-        document.getElementById('mapTypeToolbar').classList.toggle('show');
-    });
-
     layerBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             layerBtns.forEach(b => b.classList.remove('active'));
