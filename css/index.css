@@ -337,7 +337,7 @@ body.hide-node-labels .node-label {
 }
 .search-container input {
     width: 100%;
-    padding: 15px 20px 15px 45px;
+    padding: 15px 60px 15px 45px;
     border-radius: 30px;
     border: none;
     background: white;
@@ -359,13 +359,37 @@ body.hide-node-labels .node-label {
     z-index: 2;
 }
 
+.layer-toggle-wrapper {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #aaa;
+    z-index: 2;
+}
+.layer-toggle-icon {
+    color: #666;
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+.layer-toggle-icon:hover {
+    color: rgb(31, 97, 65);
+}
+
 /* CUSTOM LAYER TOOLBAR */
 .map-type-toolbar {
-    display: flex;
+    display: none; /* hidden by default */
     gap: 8px;
     margin-top: 10px;
     overflow-x: auto;
     padding-bottom: 5px; /* Kaydırma çubuğu payı */
+}
+.map-type-toolbar.show {
+    display: flex;
 }
 .map-type-toolbar::-webkit-scrollbar {
     height: 4px;

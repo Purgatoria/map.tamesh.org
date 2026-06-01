@@ -29,12 +29,15 @@ if (!isset($_SESSION['username'])) {
     <div class="search-container">
         <i class="fa fa-search search-icon"></i>
         <input type="text" id="searchInput" placeholder="Node ara (Kısa ad, uzun ad veya ID)..." autocomplete="off" />
+        <div class="layer-toggle-wrapper">
+            <span style="font-size: 14px; opacity: 0.5;">|</span>
+            <i class="fa fa-sliders layer-toggle-icon" id="layerToggleBtn" title="Harita Tipi Seç"></i>
+        </div>
         
-        <div class="map-type-toolbar">
-            <button class="layer-btn active" data-layer="osm">Normal (OSM)</button>
-            <button class="layer-btn" data-layer="topo">Topo</button>
+        <div class="map-type-toolbar" id="mapTypeToolbar">
+            <button class="layer-btn active" data-layer="osm">Normal</button>
+            <button class="layer-btn" data-layer="topo">Topoğrafya</button>
             <button class="layer-btn" data-layer="satellite">Uydu</button>
-            <button class="layer-btn" data-layer="dark">Koyu Tema</button>
         </div>
 
         <div class="search-dropdown" id="searchDropdown"></div>

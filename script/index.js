@@ -375,9 +375,12 @@ $(document).ready(function() {
     const layerMap = {
         'osm': osmLayer,
         'topo': topoLayer,
-        'satellite': satelliteLayer,
-        'dark': darkLayer
+        'satellite': satelliteLayer
     };
+
+    document.getElementById('layerToggleBtn').addEventListener('click', function() {
+        document.getElementById('mapTypeToolbar').classList.toggle('show');
+    });
 
     layerBtns.forEach(btn => {
         btn.addEventListener('click', function() {
