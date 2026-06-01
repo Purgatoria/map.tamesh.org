@@ -374,6 +374,55 @@ body.hide-node-labels .node-label {
     background: #ccc;
     border-radius: 4px;
 }
+
+/* TRACE LOGS CSS */
+.trace-list {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.trace-item {
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    color: #444;
+}
+.trace-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #222;
+    align-items: center;
+}
+.trace-time {
+    font-size: 11px;
+    color: #888;
+    font-weight: normal;
+}
+.trace-route {
+    font-family: monospace;
+    font-size: 12px;
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 6px;
+    border-radius: 4px;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.trace-route span {
+    color: #3498db;
+    font-weight: bold;
+}
+.trace-empty {
+    font-size: 13px;
+    color: #888;
+    text-align: center;
+    padding: 10px 0;
+}
 .layer-btn {
     flex: 1;
     white-space: nowrap;

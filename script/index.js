@@ -93,6 +93,7 @@ function createGaugeSVG(value, min, max, title, unit, color) {
 
 function openSidebar(item, lat, lng) {
     clearPolylines();
+    let drawnLinks = new Set();
 
     let roleName = item.role_name || "CLIENT";
     let markerColor = MapConfig.roles[roleName] || MapConfig.roles["DEFAULT"];
@@ -165,20 +166,27 @@ function openSidebar(item, lat, lng) {
                 let nLat = nData.latitude / 1e7;
                 let nLng = nData.longitude / 1e7;
                 
-                let p = L.polyline([[lat, lng], [nLat, nLng]], {
-                    color: 'rgb(31, 97, 65)',
-                    weight: 3,
-                    dashArray: '8, 8',
-                    opacity: 0.8
-                }).addTo(map);
+                let nId1 = Number(item.node_id);
+                let nId2 = Number(nData.node_id);
+                let key = `${Math.min(nId1, nId2)}-${Math.max(nId1, nId2)}`;
                 
-                p.bindTooltip(`SNR: ${n.snr} dB`, {
-                    permanent: true,
-                    className: 'rf-tooltip',
-                    direction: 'center'
-                }).openTooltip();
-                
-                currentPolylines.push(p);
+                if (!drawnLinks.has(key)) {
+                    drawnLinks.add(key);
+                    let p = L.polyline([[lat, lng], [nLat, nLng]], {
+                        color: 'rgb(31, 97, 65)',
+                        weight: 3,
+                        dashArray: '8, 8',
+                        opacity: 0.8
+                    }).addTo(map);
+                    
+                    p.bindTooltip(`SNR: ${n.snr} dB`, {
+                        permanent: true,
+                        className: 'rf-tooltip',
+                        direction: 'center'
+                    }).openTooltip();
+                    
+                    currentPolylines.push(p);
+                }
                 
                 clickAction = `onclick="map.flyTo([${nLat}, ${nLng}], 15, {animate: true, duration: 1.5});" title="Haritada konuma git"`;
             }
@@ -196,8 +204,104 @@ function openSidebar(item, lat, lng) {
     
     html += `</div>`;
 
+    // TRACE LOGS PLACEHOLDER
+    html += `<h3 class="section-title"><i class="fa fa-route"></i> Trace Logs</h3>`;
+    html += `<div id="traceLogsContainer"><div class="trace-empty">Trace rotaları yükleniyor... <i class="fa fa-spinner fa-spin"></i></div></div>`;
+
     document.getElementById('sb-content').innerHTML = html;
     sidebar.show();
+
+    // FETCH TRACEROUTES
+    fetch(`https://map.tamesh.org/api/nodes/${item.node_id}/traceroutes`)
+        .then(res => res.json())
+        .then(data => {
+            let traceContainer = document.getElementById('traceLogsContainer');
+            if (!traceContainer) return;
+            
+            if (!data.traceroutes || data.traceroutes.length === 0) {
+                traceContainer.innerHTML = `<div class="trace-empty">Traceroute verisi bulunamadı.</div>`;
+                return;
+            }
+
+            let traceHtml = `<div class="trace-list">`;
+            
+            data.traceroutes.forEach(trace => {
+                let path = [trace.from, ...(trace.route || []), trace.to];
+                
+                for (let i = 0; i < path.length - 1; i++) {
+                    let nA = Number(path[i]);
+                    let nB = Number(path[i + 1]);
+                    let key = `${Math.min(nA, nB)}-${Math.max(nA, nB)}`;
+                    
+                    if (!drawnLinks.has(key)) {
+                        drawnLinks.add(key);
+                        
+                        let nodeA = window.globalNodes.find(x => x.node_id == nA);
+                        let nodeB = window.globalNodes.find(x => x.node_id == nB);
+                        
+                        if (nodeA && nodeB && nodeA.latitude && nodeA.longitude && nodeB.latitude && nodeB.longitude) {
+                            let snrValue = trace.snr_towards && trace.snr_towards[i] != null ? trace.snr_towards[i] : null;
+                            
+                            let p = L.polyline([
+                                [nodeA.latitude / 1e7, nodeA.longitude / 1e7],
+                                [nodeB.latitude / 1e7, nodeB.longitude / 1e7]
+                            ], {
+                                color: '#3498db',
+                                weight: 2,
+                                opacity: 0.9
+                            }).addTo(map);
+                            
+                            if (snrValue !== null) {
+                                p.bindTooltip(`SNR: ${snrValue} dB`, {
+                                    permanent: true,
+                                    className: 'rf-tooltip',
+                                    direction: 'center'
+                                }).openTooltip();
+                            } else {
+                                p.bindTooltip(`Traceroute`, {
+                                    permanent: false,
+                                    direction: 'center'
+                                });
+                            }
+                            
+                            currentPolylines.push(p);
+                        }
+                    }
+                }
+                
+                let d = new Date(trace.created_at);
+                let timeStr = `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')} ${d.getDate().toString().padStart(2, '0')}/${(d.getMonth()+1).toString().padStart(2, '0')}`;
+                
+                let routeStr = path.map(id => {
+                    let node = window.globalNodes.find(x => x.node_id == id);
+                    return node ? (node.short_name || id) : id;
+                }).join(' <span>➔</span> ');
+                
+                let snrStr = trace.snr_towards ? trace.snr_towards.join(', ') : '-';
+                
+                traceHtml += `
+                    <div class="trace-item">
+                        <div class="trace-header">
+                            <span>Kayıt #${trace.id}</span>
+                            <span class="trace-time">${timeStr}</span>
+                        </div>
+                        <div class="trace-route">${routeStr}</div>
+                        <div style="margin-top: 5px; font-size: 11px; color: #666;">
+                            <strong>SNR Değerleri:</strong> ${snrStr}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            traceHtml += `</div>`;
+            traceContainer.innerHTML = traceHtml;
+        })
+        .catch(err => {
+            let traceContainer = document.getElementById('traceLogsContainer');
+            if (traceContainer) {
+                traceContainer.innerHTML = `<div class="trace-empty">Traceroute verileri çekilirken hata oluştu.</div>`;
+            }
+        });
 }
 
 $.getJSON('https://map.tamesh.org/api/nodes', function (data) {
