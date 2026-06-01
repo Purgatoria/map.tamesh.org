@@ -35,6 +35,7 @@ if (!isset($_SESSION['username'])) {
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-sidebar@0.2.4/src/L.Control.Sidebar.min.js"></script>
+    <script src="./script/config.js"></script>
     <script src="./script/index.js"></script>
 </body>
 

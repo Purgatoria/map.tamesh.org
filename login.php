@@ -41,48 +41,65 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Giriş</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş</title>
+    <link rel="stylesheet" href="./css/login.css" />
 </head>
 <body>
 
+<div class="login-container">
+    <h2>Giriş Yap</h2>
+    <form id="loginForm">
+        <div class="input-group">
+            <label for="username">Kullanıcı Adı</label>
+            <input type="text" id="username" name="username" required autocomplete="username">
+        </div>
+        <div class="input-group">
+            <label for="password">Şifre</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+        <div id="errorMessage" class="error-message"></div>
+        <button type="submit" class="login-btn">Giriş</button>
+    </form>
+</div>
+
 <script>
-function loginPrompt() {
-  const username = prompt("Kullanıcı adınızı girin:");
-  if (username !== null && username.trim() !== "") {
-    const password = prompt("Şifrenizi girin:");
-    if (password !== null && password.trim() !== "") {
-      fetch("login.php", {
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const usernameInput = document.getElementById('username').value.trim();
+    const passwordInput = document.getElementById('password').value.trim();
+    const errorDiv = document.getElementById('errorMessage');
+    
+    errorDiv.style.display = 'none';
+    errorDiv.innerText = '';
+    
+    if (!usernameInput || !passwordInput) {
+        errorDiv.innerText = 'Lütfen kullanıcı adı ve şifrenizi girin.';
+        errorDiv.style.display = 'block';
+        return;
+    }
+
+    fetch("login.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username, password: password })
-      })
-      .then(response => response.json())
-      .then(data => {
+        body: JSON.stringify({ username: usernameInput, password: passwordInput })
+    })
+    .then(response => response.json())
+    .then(data => {
         if (data.success) {
-          // Başarılı → index.php’ye yönlendir
-          window.location.href = data.redirect;
+            window.location.href = data.redirect;
         } else {
-          // Hatalı giriş → tekrar sor
-          alert("Hatalı kullanıcı adı veya şifre. Lütfen tekrar deneyin.");
-          loginPrompt(); // Recursive çağrı
+            errorDiv.innerText = data.message || "Hatalı kullanıcı adı veya şifre.";
+            errorDiv.style.display = 'block';
         }
-      })
-      .catch(error => {
-        alert("Hata oluştu: " + error);
-      });
-    } else {
-      alert("Şifre boş bırakıldı.");
-      loginPrompt(); // tekrar sor
-    }
-  } else {
-    alert("Kullanıcı adı boş bırakıldı.");
-    loginPrompt(); // tekrar sor
-  }
-}
-
-// Sayfa yüklendiğinde çalıştır
-loginPrompt();
+    })
+    .catch(error => {
+        errorDiv.innerText = "Bir hata oluştu. Lütfen tekrar deneyin.";
+        errorDiv.style.display = 'block';
+    });
+});
 </script>
 
 </body>
