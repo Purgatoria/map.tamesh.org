@@ -240,11 +240,16 @@ function openSidebar(item, lat, lng) {
                         let nodeB = window.globalNodes.find(x => x.node_id == nB);
                         
                         if (nodeA && nodeB && nodeA.latitude && nodeA.longitude && nodeB.latitude && nodeB.longitude) {
+                            let latA = nodeA.latitude / 1e7;
+                            let lngA = nodeA.longitude / 1e7;
+                            let latB = nodeB.latitude / 1e7;
+                            let lngB = nodeB.longitude / 1e7;
+                            
                             let snrValue = trace.snr_towards && trace.snr_towards[i] != null ? trace.snr_towards[i] : null;
                             
                             let p = L.polyline([
-                                [nodeA.latitude / 1e7, nodeA.longitude / 1e7],
-                                [nodeB.latitude / 1e7, nodeB.longitude / 1e7]
+                                [latA, lngA],
+                                [latB, lngB]
                             ], {
                                 color: '#3498db',
                                 weight: 2,
@@ -265,6 +270,23 @@ function openSidebar(item, lat, lng) {
                             }
                             
                             currentPolylines.push(p);
+
+                            // Ok işareti (Direction Arrow)
+                            let pA = map.project([latA, lngA], 0);
+                            let pB = map.project([latB, lngB], 0);
+                            let angle = Math.atan2(pB.y - pA.y, pB.x - pA.x) * 180 / Math.PI;
+                            
+                            let midLat = (latA + latB) / 2;
+                            let midLng = (lngA + lngB) / 2;
+                            
+                            let arrowIcon = L.divIcon({
+                                className: 'trace-arrow-icon',
+                                html: `<div style="transform: rotate(${angle}deg); color: #3498db; font-size: 16px; font-weight: bold; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; line-height: 1;">➤</div>`,
+                                iconSize: [16, 16],
+                                iconAnchor: [8, 8]
+                            });
+                            let arrowMarker = L.marker([midLat, midLng], {icon: arrowIcon, interactive: false}).addTo(map);
+                            currentPolylines.push(arrowMarker);
                         }
                     }
                 }
