@@ -11,10 +11,32 @@ var map = L.map('map', {
     zoom: 7
 });
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    foo: 'bar',
+var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+});
+
+var topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> contributors'
+});
+
+var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+
+var darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://carto.com/attributions">CARTO</a>'
+});
+
+osmLayer.addTo(map); // Varsayılan katman
+
+var baseMaps = {
+    "Normal (OSM)": osmLayer,
+    "Topoğrafya": topoLayer,
+    "Uydu Görünümü": satelliteLayer,
+    "Koyu Tema": darkLayer
+};
+
+L.control.layers(baseMaps, null, {position: 'topright'}).addTo(map);
 
 /*var sidebar = L.control.sidebar('sidebar', {
     position: 'left',
