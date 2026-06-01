@@ -156,8 +156,6 @@ function openSidebar(item, lat, lng) {
     // Neighbours
     html += `<h3 class="section-title"><i class="fa fa-network-wired"></i> Komşular (${item.neighbours ? item.neighbours.length : 0})</h3>`;
     html += `<div class="neighbour-list">`;
-    
-    let bounds = L.latLngBounds([ [lat, lng] ]);
 
     if (item.neighbours && item.neighbours.length > 0) {
         item.neighbours.forEach(n => {
@@ -183,7 +181,6 @@ function openSidebar(item, lat, lng) {
                 }).openTooltip();
                 
                 currentPolylines.push(p);
-                bounds.extend([nLat, nLng]);
                 
                 clickAction = `onclick="map.flyTo([${nLat}, ${nLng}], 15, {animate: true, duration: 1.5});" title="Haritada konuma git"`;
             }
@@ -195,12 +192,6 @@ function openSidebar(item, lat, lng) {
                 </div>
             `;
         });
-        
-        if (currentPolylines.length > 0) {
-            setTimeout(() => {
-                map.fitBounds(bounds, { padding: [50, 50] });
-            }, 100);
-        }
     } else {
         html += `<div class="no-data">Komşu verisi bulunamadı.</div>`;
     }

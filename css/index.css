@@ -407,3 +407,10 @@ body.hide-node-labels .node-label {
     margin-right: 8px;
     color: rgb(31, 97, 65);
 }
+
+/* MOBILE FIXES */
+@media (max-width: 768px) {
+    .search-container {
+        top: 70px; /* Harita butonlarının (layer, zoom) üstüne binmesini engellemek için aşağı kaydırıldı */
+    }
+}
