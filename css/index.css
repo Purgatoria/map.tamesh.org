@@ -178,12 +178,37 @@ body.hide-node-labels .node-label {
     accent-color: rgb(31, 97, 65);
 }
 
-/* SIDEBAR & DASHBOARD CSS */
+/* SIDEBAR & DASHBOARD CSS OVERRIDES */
 .leaflet-sidebar {
-    width: 400px;
-    max-width: 100vw;
-    font-family: 'Inter', sans-serif;
+    width: 400px !important;
+    max-width: 100vw !important;
+    padding: 0 !important;
+    height: 100vh !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    z-index: 9999 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
 }
+.leaflet-sidebar.left {
+    left: -420px !important; /* gizliyken tamamen dışarıda kalması için */
+    transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+.leaflet-sidebar.left.visible {
+    left: 0 !important;
+}
+
+.leaflet-sidebar > .leaflet-control {
+    border-radius: 0 !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 25px !important;
+    box-shadow: 5px 0 30px rgba(0,0,0,0.15) !important;
+    box-sizing: border-box;
+    overflow-y: auto !important;
+    border: none !important;
+    background: #fff !important;
+}
+
 .sidebar-header {
     display: flex;
     justify-content: space-between;
