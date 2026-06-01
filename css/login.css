@@ -12,17 +12,9 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(45deg, #1e1e2f, #2c3e50, #1a2a3a);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    background: rgb(37, 39, 48);
     color: #fff;
     padding: 20px;
-}
-
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
 }
 
 .login-container {
@@ -70,9 +62,9 @@ body {
 }
 
 .input-group input:focus {
-    border-color: #3498db;
+    border-color: rgb(31, 97, 65);
     background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 0 10px rgba(31, 97, 65, 0.3);
 }
 
 .login-btn {
@@ -80,7 +72,7 @@ body {
     padding: 12px;
     border: none;
     border-radius: 10px;
-    background: #3498db;
+    background: rgb(31, 97, 65);
     color: #fff;
     font-size: 16px;
     font-weight: 600;
@@ -90,9 +82,9 @@ body {
 }
 
 .login-btn:hover {
-    background: #2980b9;
+    background: rgb(24, 77, 52); /* Biraz daha koyu yeşil */
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+    box-shadow: 0 5px 15px rgba(31, 97, 65, 0.4);
 }
 
 .error-message {

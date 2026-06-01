@@ -97,3 +97,25 @@ function toMaidenhead(lat, lon) {
 
     return fieldLon + fieldLat + squareLon + squareLat + subLon + subLat;
 }
+
+// Renk Gösterge (Legend) Kartı
+var legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div', 'info legend');
+    div.innerHTML += '<h4 style="margin: 0 0 8px 0; font-size: 14px;">Rol Renkleri</h4>';
+    
+    // config.js içerisindeki rolleri dön ve listeye ekle
+    for (var role in MapConfig.roles) {
+        if (role !== "DEFAULT") {
+            div.innerHTML +=
+                '<div class="legend-item">' +
+                '<i style="background:' + MapConfig.roles[role] + '; border: ' + MapConfig.markerStyle.weight + 'px solid ' + MapConfig.markerStyle.color + '"></i> ' +
+                '<span>' + role + '</span>' +
+                '</div>';
+        }
+    }
+    return div;
+};
+
+legend.addTo(map);
