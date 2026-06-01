@@ -153,3 +153,27 @@ body {
 .leaflet-control-layers-list span {
     font-weight: 500;
 }
+
+/* Node İsimlerini Gizleme Fonksiyonu CSS'i */
+body.hide-node-labels .node-label {
+    display: none !important;
+}
+
+.toggle-labels {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.toggle-labels input {
+    margin-right: 6px;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    accent-color: rgb(31, 97, 65);
+}

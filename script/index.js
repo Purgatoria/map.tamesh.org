@@ -140,19 +140,35 @@ legend.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend');
     div.innerHTML += '<h4 style="margin: 0 0 8px 0; font-size: 14px;">Rol Renkleri</h4>';
     
+    // İsimleri gizle/göster Toggle
+    var toggleLabel = L.DomUtil.create('label', 'toggle-labels', div);
+    toggleLabel.innerHTML = '<input type="checkbox" id="toggleNodeLabels" checked> Haritada İsimleri Göster';
+    toggleLabel.firstChild.addEventListener('change', function(e) {
+        if (e.target.checked) {
+            document.body.classList.remove('hide-node-labels');
+        } else {
+            document.body.classList.add('hide-node-labels');
+        }
+    });
+
     // config.js içerisindeki rolleri dön ve listeye ekle
-    var gridDiv = '<div class="legend-grid">';
+    var gridDiv = document.createElement('div');
+    gridDiv.className = 'legend-grid';
+    
     for (var role in MapConfig.roles) {
         if (role !== "DEFAULT") {
-            gridDiv +=
+            gridDiv.innerHTML +=
                 '<div class="legend-item">' +
                 '<i style="background:' + MapConfig.roles[role] + '; border: ' + MapConfig.markerStyle.weight + 'px solid ' + MapConfig.markerStyle.color + '"></i> ' +
                 '<span>' + role + '</span>' +
                 '</div>';
         }
     }
-    gridDiv += '</div>';
-    div.innerHTML += gridDiv;
+    div.appendChild(gridDiv);
+    
+    // Çekmece olayının map sürüklemesini engellememesi için
+    L.DomEvent.disableClickPropagation(div);
+
     return div;
 };
 
