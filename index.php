@@ -13,6 +13,8 @@ if (!isset($_SESSION['username'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Map</title>
+    <!-- Harita Purgatoria Network'e taşındı; arama motorlarına yeni adresi gösteriyoruz. -->
+    <link rel="canonical" href="https://purgatoria.network/haritalar/meshtastic" />
 	<meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="stylesheet" href="./css/index.css?v=<?= time() ?>" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -23,6 +25,7 @@ if (!isset($_SESSION['username'])) {
 </head>
 
 <body>
+    <?php include __DIR__ . '/gecis.php'; ?>
     <div id="map"></div>
 
     <!-- SEARCH BAR & TOOLBAR -->

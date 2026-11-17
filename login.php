@@ -116,6 +116,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 <body>
 
+<?php include __DIR__ . '/gecis.php'; ?>
+
 <div class="login-container">
     <h2>Giriş Yap</h2>
     <form id="loginForm">

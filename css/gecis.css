@@ -1,0 +1,139 @@
+/* ── Purgatoria Network geçiş duyurusu ──────────────────────────────────────
+   map.tamesh.org → purgatoria.network/haritalar/meshtastic
+
+   Bu dosya yalnızca gecis.php tarafından yükleniyor; index.php (Leaflet
+   haritası) ve login.php (giriş formu) aynı görünsün diye ortak.
+
+   Renkler purgatoria.network'ün globals.css tokenlarından: beyaz kart,
+   #1d1d1b metin, #b94f1d kiremit vurgu, #d8d6d0 çerçeve. İki site yan yana
+   aynı markayı gösteriyor.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.pn-gecis {
+    position: fixed;
+    inset: 0;
+    /* Leaflet kontrol ve sidebar katmanları ~1000'de; duyuru hepsinin üstünde. */
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(8, 8, 8, 0.72);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.pn-gecis[hidden] {
+    display: none;
+}
+
+.pn-gecis-kart {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 460px;
+    background: #ffffff;
+    color: #1d1d1b;
+    border-radius: 14px;
+    padding: 26px 28px 24px;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+    text-align: left;
+    line-height: 1.55;
+}
+
+.pn-gecis-marka {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #73716d;
+}
+
+.pn-gecis-kart h1 {
+    margin: 12px 0 10px;
+    font-size: 21px;
+    line-height: 1.25;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.pn-gecis-kart p {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: #4a4844;
+}
+
+.pn-gecis-kart strong {
+    color: #1d1d1b;
+    word-break: break-word;
+}
+
+.pn-gecis-eylem {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.pn-gecis-birincil,
+.pn-gecis-ikincil {
+    box-sizing: border-box;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+    /* Dokunma hedefi 44px'in altına inmesin. */
+    padding: 13px 18px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pn-gecis-birincil {
+    background: #b94f1d;
+    color: #ffffff;
+}
+
+.pn-gecis-birincil:hover {
+    background: #9a3f14;
+}
+
+.pn-gecis-ikincil {
+    background: #ffffff;
+    color: #4a4844;
+    border-color: #d8d6d0;
+}
+
+.pn-gecis-ikincil:hover {
+    background: #f7f6f2;
+}
+
+.pn-gecis-birincil:focus-visible,
+.pn-gecis-ikincil:focus-visible {
+    outline: 2px solid #b94f1d;
+    outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+    .pn-gecis-kart {
+        padding: 22px 20px 20px;
+        border-radius: 12px;
+    }
+
+    .pn-gecis-kart h1 {
+        font-size: 19px;
+    }
+
+    .pn-gecis-eylem {
+        flex-direction: column;
+    }
+
+    .pn-gecis-birincil,
+    .pn-gecis-ikincil {
+        width: 100%;
+    }
+}
